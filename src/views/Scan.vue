@@ -20,33 +20,36 @@
         <ScanCam />
       </el-dialog>
     </el-row>
+    <div v-for="(tarima, id) in filtrarTarima" :key="id">
     <el-row :gutter="12">
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Tarima" :description="tarima.tarima" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Trabajo" :description="tarima.trabajo" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Parte" :description="tarima.parte" center="center" medium="medium" />
-      </el-col>
+      
+        <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
+          <Card name="Tarima" :description="tarima.tarima" center="center" medium="medium" />
+        </el-col>
+        <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
+          <Card name="Trabajo" :description="tarima.trabajo" center="center" medium="medium" />
+        </el-col>
+        <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
+          <Card name="Parte" :description="tarima.parte" center="center" medium="medium" />
+        </el-col>
 
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Cantidad" :description="tarima.cantidad" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Maquina" :description="tarima.maquina" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Ubicacion" :description="tarima.ubicacion" center="center" medium="medium" />
-      </el-col>
+        <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
+          <Card name="Cantidad" :description="tarima.cantidad" center="center" medium="medium" />
+        </el-col>
+        <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
+          <Card name="Maquina" :description="tarima.maquina" center="center" medium="medium" />
+        </el-col>
+        <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
+          <Card name="Ubicacion" :description="tarima.ubicacion" center="center" medium="medium" />
+        </el-col>
+      
     </el-row>
     <el-row>
       <center>
         <h2>Acumulado</h2>
       </center>
     </el-row>
-    <el-row  :gutter="12">
+    <el-row :gutter="12">
       <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
         <Card name="Trabajo" :description="acumulado.trabajo" center="center" medium="medium" />
       </el-col>
@@ -66,6 +69,14 @@
         <Card name="Almacen" :description="acumulado.almacen" center="center" medium="medium" />
       </el-col>
     </el-row>
+    </div>
+    <el-dialog
+    title="Añadir ubicacion"
+    :visible.sync="dialogUbicacion"
+    width="90%"
+    >
+      <h3>Hola</h3>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -86,11 +97,11 @@ export default {
     modalScanQR() {
       return this.$store.state.modalScanQR;
     },
-    filtrarTarimas: function () {
-      return this.tarimas.filter((tarima) => {
-        return tarima.tarima.match(this.buscarTarima)
-      })
-    }
+    filtrarTarima: function() {
+      return this.tarimas.filter((tarima) => tarima.tarima == this.buscarTarima & this.dialogUbicacion == true);
+      
+    },
+
   },
   methods: {
     showModal: function() {
@@ -100,6 +111,7 @@ export default {
   },
   data() {
     return {
+      dialogUbicacion: false,
       buscarTarima: "",
       tarima: {
         id: 1,
@@ -114,15 +126,15 @@ export default {
         {
           id: 1,
           tarima: 19347,
-          trabajo: 195289,
-          parte: "A006288",
-          cantidad: 236,
+          trabajo: 195288,
+          parte: "A006287",
+          cantidad: 237,
           maquina: "MINILINE 618",
           ubicacion: "ALM05"
         },
         {
           id: 2,
-          tarima: 19347,
+          tarima: 19348,
           trabajo: 195289,
           parte: "A006288",
           cantidad: 236,
@@ -151,9 +163,9 @@ export default {
   }
 }
 .el-dialog__headerbtn .el-dialog__close {
-    display: none !important;
+  display: none !important;
 }
 .el-col-24 {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 </style>
