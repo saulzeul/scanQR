@@ -5,15 +5,15 @@
     </center>
     <el-row :gutter="12">
       <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-        <div v-if="inputScanQR">
-          <el-input v-model="resultQR" maxlength="20"></el-input>
-        </div>
-        <div v-else>
-          <el-input v-model="buscarTarima" maxlength="20"></el-input>
-        </div>
+        <el-button type="primary" @click="showModal()" style="width:100%;">ESCANEAR CON CAMARA</el-button>
       </el-col>
       <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-        <el-button type="primary" @click="showModal()" style="width:100%;">ESCANEAR CON CAMARA</el-button>
+        <div v-if="inputScanQR">
+          <el-input v-model="resultQR" maxlength="20" type="number"></el-input>
+        </div>
+        <div v-else>
+          <el-input v-model="buscarTarima" maxlength="20" type="number" ref="buscarTarima"></el-input>
+        </div>
       </el-col>
       <el-dialog :visible.sync="modalScanQR" width="80%" center>
         <h2>Escanear QR</h2>
@@ -21,8 +21,11 @@
       </el-dialog>
     </el-row>
     <div v-for="(tarima, id) in filtrarTarima" :key="id">
-    <el-row :gutter="12">
-      
+      <el-row :gutter="12">
+        <center><h2>Añadir ubicacion</h2></center>
+        <el-col :span="24">          
+          <el-input v-model="test" @keydown.native.tab="getInfo"></el-input>
+        </el-col>
         <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
           <Card name="Tarima" :description="tarima.tarima" center="center" medium="medium" />
         </el-col>
@@ -42,39 +45,10 @@
         <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
           <Card name="Ubicacion" :description="tarima.ubicacion" center="center" medium="medium" />
         </el-col>
-      
-    </el-row>
-    <el-row>
-      <center>
-        <h2>Acumulado</h2>
-      </center>
-    </el-row>
-    <el-row :gutter="12">
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Trabajo" :description="acumulado.trabajo" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Fecha" :description="acumulado.fecha" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Piezas" :description="acumulado.piezas" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Tarimas" :description="acumulado.tarimas" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Maquina" :description="acumulado.maquina" center="center" medium="medium" />
-      </el-col>
-      <el-col :xs="12" :sm="12" :md="8" :lg="8" :xl="8">
-        <Card name="Almacen" :description="acumulado.almacen" center="center" medium="medium" />
-      </el-col>
-    </el-row>
+      </el-row>
     </div>
-    <el-dialog
-    title="Añadir ubicacion"
-    :visible.sync="dialogUbicacion"
-    width="90%"
-    >
+    <pre>{{ $data }}</pre>
+    <el-dialog title="Añadir ubicacion" :visible.sync="dialogUbicacion" width="90%">
       <h3>Hola</h3>
     </el-dialog>
   </div>
@@ -87,6 +61,9 @@ export default {
     Card,
     ScanCam
   },
+  mounted() {
+    this.autofocusFirst();
+  },
   computed: {
     resultQR() {
       return this.$store.state.resultQR;
@@ -98,30 +75,29 @@ export default {
       return this.$store.state.modalScanQR;
     },
     filtrarTarima: function() {
-      return this.tarimas.filter((tarima) => tarima.tarima == this.buscarTarima & this.dialogUbicacion == true);
-      
-    },
-
+      let tarima = this.tarimas.filter(
+        tarima => tarima.tarima == this.buscarTarima
+      );
+      return tarima;
+    }
   },
   methods: {
     showModal: function() {
       this.$store.dispatch("showModalScanQR"),
         this.$store.dispatch("showInputScanQR");
+    },
+    autofocusFirst() {
+      this.$refs.buscarTarima.focus();
+    },
+    getInfo() {
+      console.log(this.test)
     }
   },
   data() {
     return {
       dialogUbicacion: false,
+      test: '',
       buscarTarima: "",
-      tarima: {
-        id: 1,
-        tarima: 19347,
-        trabajo: 195289,
-        parte: "A006288",
-        cantidad: 236,
-        maquina: "MINILINE 618",
-        ubicacion: "ALM05"
-      },
       tarimas: [
         {
           id: 1,
@@ -141,16 +117,7 @@ export default {
           maquina: "MINILINE 618",
           ubicacion: "ALM05"
         }
-      ],
-      acumulado: {
-        id: 1,
-        trabajo: 195711,
-        fecha: "10/04/2020",
-        piezas: 15750,
-        tarimas: 5,
-        maquina: "DRO",
-        almacen: "ALM05"
-      }
+      ]
     };
   }
 };
